@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CleanCheck – Riesgos de productos de limpieza</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>try{var f=localStorage.getItem("cc-fs");if(f)document.documentElement.style.fontSize=f;}catch(e){}</script>
+<style>
+:root{
+  --bg:#F3F7F6; --surface:#FFFFFF; --ink:#11312E; --muted:#4C6562; --line:#E1EAE8;
+  --accent:#0E8C7F; --accent-ink:#FFFFFF; --danger:#B03A22; --danger-bg:#FCEAE3;
+  --warn:#875900; --warn-bg:#FFF3D4; --info:#27587F; --info-bg:#E7F0F9; --ok-bg:#E1F4EE;
+  --shadow:0 2px 10px rgba(15,45,42,.07);
+  --shadow-lg:0 14px 34px rgba(15,45,42,.14);
+  --head:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C1E22; --surface:#15303A; --ink:#E6F3F1; --muted:#A7C3C6; --line:#27454F;
+    --accent:#4FC4B5; --accent-ink:#0B2226; --danger:#FF9C88; --danger-bg:#3E1D17;
+    --warn:#F2C25B; --warn-bg:#3A2E0D; --info:#8CC0EE; --info-bg:#172E45; --ok-bg:#153B37;
+    --shadow:0 2px 10px rgba(0,0,0,.3); --shadow-lg:0 14px 34px rgba(0,0,0,.45);
+  }
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);line-height:1.6;font-size:1.125rem}
+.wrap{max-width:1020px;margin:0 auto;padding:0 20px 56px}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+header.top{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;margin-bottom:34px}
+.brand{font-family:var(--head);font-weight:800;font-size:1.5rem;letter-spacing:-.01em}
+.brand span{color:var(--accent)}
+nav{display:flex;flex-wrap:wrap}
+nav a{display:inline-block;color:var(--muted);text-decoration:none;font-weight:600;padding:12px 10px;min-height:48px;border-radius:10px}
+nav a:hover,nav a:focus-visible{color:var(--accent);background:var(--ok-bg)}
+nav a+a{margin-left:4px}
+.fs{display:flex;gap:8px}
+.fs button{font:inherit;font-weight:700;font-size:1rem;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;min-width:54px;min-height:48px;cursor:pointer;box-shadow:var(--shadow)}
+.fs button:hover{border-color:var(--accent);color:var(--accent)}
+
+.hero{display:flex;align-items:center;gap:36px;margin-bottom:44px}
+.hero>div{flex:1 1 340px}
+.heroimg{flex:0 1 360px;width:360px;max-width:100%;border-radius:24px;box-shadow:var(--shadow-lg);display:block;aspect-ratio:4/3;object-fit:cover}
+@media (max-width:760px){.hero{flex-direction:column;align-items:stretch;gap:22px}.heroimg{width:100%;flex:none}}
+h1{font-family:var(--head);font-weight:800;font-size:clamp(1.9rem,5vw,2.8rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 14px}
+h2{font-family:var(--head);font-weight:600;font-size:1.75rem;margin:0 0 8px;letter-spacing:-.01em}
+.lead{color:var(--muted);max-width:64ch;margin:0 0 22px;font-size:1.1rem}
+.steps{display:flex;flex-wrap:wrap;gap:12px;list-style:none;margin:0;padding:0}
+.steps li{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:10px 18px 10px 12px;font-weight:600;font-size:1rem;box-shadow:var(--shadow)}
+.steps b{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:.95rem;flex:none}
+
+section{margin-top:52px;scroll-margin-top:80px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:var(--shadow)}
+.tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:18px 0 14px}
+.tools input{flex:1 1 280px;font:inherit;font-size:1.1rem;padding:15px 18px;border-radius:16px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);min-height:58px;box-shadow:var(--shadow)}
+.tools input::placeholder{color:var(--muted);opacity:1}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{font:inherit;font-size:1.02rem;font-weight:600;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:999px;padding:11px 18px;cursor:pointer;min-height:54px;display:inline-flex;align-items:center;gap:9px;box-shadow:var(--shadow);transition:background .18s,border-color .18s,transform .15s}
+.chip:hover{border-color:var(--accent);transform:translateY(-2px)}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip[aria-pressed="true"] svg rect[fill="#fff"],.chip[aria-pressed="true"] svg path{opacity:.95}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);transition:transform .2s ease,box-shadow .2s ease;animation:cardin .4s ease-out both}
+.card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+@keyframes cardin{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.photo{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;background:var(--line)}
+.cbody{padding:20px}
+.card h3{font-family:var(--head);font-size:1.3rem;margin:0 0 2px}
+.card .type{color:var(--muted);font-size:1rem;margin:0 0 12px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tag{font-size:.9rem;font-weight:600;background:var(--ok-bg);color:var(--accent);border-radius:999px;padding:4px 12px}
+.block{border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.block b.t{display:block;font-family:var(--head);font-size:1.02rem;font-weight:600;margin-bottom:6px}
+.block ul{margin:0;padding-left:1.15em;font-size:1rem}
+.block li{margin:5px 0}
+.who{background:var(--warn-bg);border-left:5px solid var(--warn)}
+.who b.t{color:var(--warn)}
+.safe{background:var(--ok-bg);border-left:5px solid var(--accent)}
+.safe b.t{color:var(--accent)}
+.avoid{font-size:1rem;border-top:1px dashed var(--line);padding-top:12px;color:var(--muted)}
+.avoid strong{color:var(--danger)}
+.empty{color:var(--muted);padding:16px 0;font-size:1.05rem;background:var(--surface);border:1px dashed var(--line);border-radius:16px;text-align:center}
+
+#result{margin-top:18px;display:grid;gap:12px}
+.alert{border-radius:16px;padding:16px 18px;border-left:6px solid;animation:pop .18s ease-out;font-size:1.05rem}
+.alert b{display:block;font-weight:700;font-size:1.1rem;margin-bottom:4px}
+.alert.danger{background:var(--danger-bg);border-color:var(--danger)}
+.alert.danger b{color:var(--danger)}
+.alert.warn{background:var(--warn-bg);border-color:var(--warn)}
+.alert.warn b{color:var(--warn)}
+.alert.info{background:var(--info-bg);border-color:var(--info)}
+.alert.info b{color:var(--info)}
+.alert.ok{background:var(--ok-bg);border-color:var(--accent)}
+.alert.ok b{color:var(--accent)}
+.alert p{margin:0;font-size:1.02rem}
+@keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+footer{margin-top:56px;border-top:1px solid var(--line);padding-top:24px;color:var(--muted);font-size:1rem}
+footer p{margin:8px 0;max-width:74ch}
+.aviso{background:var(--warn-bg);border-left:6px solid var(--warn);border-radius:16px;padding:18px 20px;color:var(--ink);font-size:1.05rem;margin-bottom:18px!important}
+.credits{margin-top:14px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 18px}
+.credits summary{cursor:pointer;font-weight:700;color:var(--ink);min-height:44px;display:flex;align-items:center}
+.credits ul{margin:10px 0 4px;padding-left:1.2em}
+.credits li{margin:5px 0;font-size:.95rem}
+  .credits a{color:var(--accent)}
+  .arte{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px}
+  .arte figure{margin:0;text-align:center}
+  .arte img{width:72px;height:72px;object-fit:cover;border-radius:14px;border:1px solid var(--line);display:block}
+  .arte figcaption{font-size:.9rem;color:var(--muted);margin-top:6px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">Clean<span>Check</span></div>
+    <nav><a href="#productos">Productos</a><a href="#mezclas">Mezclas</a></nav>
+    <div class="fs" role="group" aria-label="Tamaño de la letra">
+      <button type="button" id="fsDown" aria-label="Reducir el tamaño de la letra">A−</button>
+      <button type="button" id="fsUp" aria-label="Aumentar el tamaño de la letra">A+</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div>
+      <h1>Los riesgos de los productos de limpieza, en un solo lugar</h1>
+      <p class="lead">Para quienes hacen las tareas de casa todos los días: aquí puedes ver qué producto puede afectarte, a quién le hace más daño y cómo usarlo sin peligro.</p>
+      <ol class="steps">
+        <li><b>1</b>Busca el producto</li>
+        <li><b>2</b>Lee a quién le afecta</li>
+        <li><b>3</b>Sigue los consejos</li>
+      </ol>
+    </div>
+    <img class="heroimg" src="img/hero.jpg" alt="Cesta con productos de limpieza, guantes y esponjas" width="360" height="270">
+  </div>
+
+  <section id="productos">
+    <h2>Consulta de productos</h2>
+    <p class="lead" style="margin-bottom:0">Busca el producto por su nombre o elige una actividad (baños, cocina, pisos…).</p>
+    <div class="tools">
+      <input id="q" type="search" placeholder="Buscar producto (ej. cloro, vinagre)" aria-label="Buscar producto" enterkeyhint="search">
+    </div>
+    <div class="chips" id="acts" role="group" aria-label="Filtrar por actividad"></div>
+    <div class="grid" id="list" style="margin-top:20px"></div>
+  </section>
+
+  <section id="mezclas">
+    <h2>Verificador de mezclas</h2>
+    <p class="lead" style="margin-bottom:16px">¿Tienes dos productos a la vez? Toca los que piensas combinar y te avisamos si hay riesgo.</p>
+    <div class="panel">
+      <div class="chips" id="picker" role="group" aria-label="Productos para comparar"></div>
+      <div id="result" aria-live="polite"></div>
+    </div>
+  </section>
+
+  <footer>
+    <p class="aviso"><strong>Aviso:</strong> CleanCheck es un prototipo académico de consulta. No diagnostica enfermedades ni alergias, y que una combinación no aparezca aquí no significa que sea segura. Lee siempre la etiqueta. En caso de intoxicación, busca atención médica.</p>
+    <p>Corporación Unificada Nacional (CUN) · Ingeniería de Sistemas · Juan Pablo Berdugo Torres</p>
+    <details class="credits">
+      <summary>Créditos de fotos</summary>
+      <ul>
+        <li><a href="https://commons.wikimedia.org/wiki/File:HK_Kao_Bleaches_2.JPG" target="_blank" rel="noopener">Blanqueador</a> – Meadohsum, CC BY-SA 3.0 (Wikimedia Commons)</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Windex_(48089717956).jpg" target="_blank" rel="noopener">Limpiavidrios</a> – Ajay Suresh, CC BY 2.0 (Wikimedia Commons)</li>
+        <li><a href="https://www.flickr.com/photos/39160147@N03/15459193433" target="_blank" rel="noopener">Vinagre</a> – JeepersMedia, CC BY</li>
+        <li><a href="https://www.flickr.com/photos/85742444@N03/8455126916" target="_blank" rel="noopener">Agua oxigenada</a> – Trenten Kelley, CC BY-ND</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:2-Propanol_(Isopropylalkohol)_Flasche_aus_Apotheke_heller.jpg" target="_blank" rel="noopener">Alcohol</a> – Reiserfs, CC BY-SA 3.0 (Wikimedia Commons)</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:ToiletDuck200706251755.jpg" target="_blank" rel="noopener">Limpiador de baño</a> – Tomchiukc, dominio público (Wikimedia Commons)</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:WAXIE-Green_Maravilloso_Lavender_Neutral_Cleaner_%26_Degreaser.jpg" target="_blank" rel="noopener">Desengrasante</a> – TaurusEmerald, CC BY-SA 4.0 (Wikimedia Commons)</li>
+        <li><a href="https://commons.wikimedia.org/w/index.php?curid=101300771" target="_blank" rel="noopener">Detergente multiusos</a> – ajay_suresh, CC BY (Wikimedia Commons)</li>
+        <li><a href="https://www.flickr.com/photos/37487618@N06/8550329514" target="_blank" rel="noopener">Bicarbonato</a> – kimberlykappel, CC BY-NC</li>
+        <li><a href="https://www.flickr.com/photos/168245564@N05/48231491561" target="_blank" rel="noopener">Desinfectante</a> – bmstores, CC BY</li>
+        <li><a href="https://www.flickr.com/photos/150276478@N03/34517609932" target="_blank" rel="noopener">Foto principal</a> – franchiseopportunitiesphotos, CC BY-SA</li>
+        <li><a href="https://commons.wikimedia.org/wiki/File:Backofenreiniger.jpg" target="_blank" rel="noopener">Quitamantecas</a> – HaJo88, CC BY-SA 4.0 (Wikimedia Commons)</li>
+        <li><a href="https://www.flickr.com/photos/39160147@N03/14938294640" target="_blank" rel="noopener">Desatascador</a> – JeepersMedia, CC BY</li>
+        <li><a href="https://www.flickr.com/photos/77178542@N00/97620850" target="_blank" rel="noopener">Líquido para lavar platos</a> – donnamarijne, CC BY-SA</li>
+        <li><a href="https://www.flickr.com/photos/39160147@N03/15075395656" target="_blank" rel="noopener">Detergente para ropa</a> – JeepersMedia, CC BY</li>
+        <li><a href="https://www.flickr.com/photos/39160147@N03/14678887137" target="_blank" rel="noopener">Toallitas desinfectantes</a> – JeepersMedia, CC BY</li>
+        <li><a href="https://www.flickr.com/photos/21051491@N02/7980493529" target="_blank" rel="noopener">Suavizante de telas</a> – qubodup, CC BY</li>
+        <li><a href="https://www.flickr.com/photos/185514373@N06/49061656498" target="_blank" rel="noopener">Quitamugre</a> – shop8447, CC0</li>
+      </ul>
+      <p>Fotos de fuentes libres (Wikimedia Commons y Flickr vía Openverse), sin modificar, con fines ilustrativos y académicos. Las marcas que aparecen pertenecen a sus respectivos dueños.</p>
+    </details>
+    <div class="arte" aria-label="Créditos de ilustraciones">
+      <figure><img src="img/cyberlock.png" alt="Ilustración: cabeza de criatura blanca con penacho verde"><figcaption>cyberlock</figcaption></figure>
+      <figure><img src="img/emory.png" alt="Ilustración: personaje de cabello rosa"><figcaption>Emory</figcaption></figure>
+      <figure><img src="img/hardboiledvoid.png" alt="Ilustración: criatura oscura con capa púrpura"><figcaption>hardboiledvoid</figcaption></figure>
+      <figure><img src="img/b15.png" alt="Foto: peluche rosa con lentes de sol en un asiento de auto"><figcaption>B15</figcaption></figure>
+    </div>
+  </footer>
+</div>
+
+<script>
+const PRODUCTS=[
+ {id:"cloro",n:"Blanqueador (cloro)",t:"Hipoclorito de sodio",a:["Baños","Ropa","Pisos","Desinfectar"],img:"img/cloro.jpg",
+  who:["Personas con asma o problemas respiratorios","Personas con piel sensible o con heridas","Niños y mascotas","Personas mayores (los vapores pueden marearlas)"],
+  safe:["Ventila la habitación antes y durante el uso","Usa guantes y evita que te salpique en los ojos o la boca","Diluye solo la cantidad que indica la etiqueta","Guárdalo tapado, fresco y fuera del alcance de niños y mascotas"]},
+ {id:"amoniaco",n:"Limpiador con amoníaco",t:"Limpiavidrios / multiusos",a:["Vidrios","Pisos"],img:"img/amoniaco.jpg",
+  who:["Personas con asma o enfermedades de los pulmones","Personas mayores","Niños"],
+  safe:["Abre ventanas o puertas para que el aire circule","No lo uses en espacios cerrados sin ventilación","No te acerques la cara: evita respirar los vapores","No lo mezcles con otros productos"]},
+ {id:"vinagre",n:"Vinagre blanco",t:"Ácido acético diluido",a:["Vidrios","Cocina"],img:"img/vinagre.jpg",
+  who:["Personas con piel sensible o eccemas","Personas con asma (su vapor puede irritar)"],
+  safe:["No lo uses sobre mármol, piedra natural ni granito","No lo combines con lejía ni con otros químicos","Haz primero una prueba pequeña en un lugar que no se vea","Guárdalo fuera del alcance de los niños"]},
+ {id:"peroxido",n:"Agua oxigenada",t:"Peróxido de hidrógeno",a:["Desinfectar","Manchas"],img:"img/peroxido.jpg",
+  who:["Personas con piel sensible","Niños y mascotas"],
+  safe:["Guárdalo en el envase oscuro que trae","Haz una prueba en una zona pequeña antes de usarlo","No lo pongas en los ojos ni en la boca","Fuera del alcance de los niños"]},
+ {id:"alcohol",n:"Alcohol antiséptico",t:"Etanol / isopropílico",a:["Desinfectar","Vidrios"],img:"img/alcohol.jpg",
+  who:["Personas con piel seca o eccemas","Niños (riesgo de tragarlo por error)","Personas mayores (puede marearlos)"],
+  safe:["Nunca lo uses cerca del fuego, cerillas ni agua caliente","Úsalo en lugares ventilados","Guarda el envase bien cerrado","No lo bebas: es tóxico"]},
+ {id:"acido",n:"Limpiador ácido para baños",t:"Ácido clorhídrico / muriático",a:["Baños"],img:"img/acido.jpg",
+  who:["Personas con asma o problemas respiratorios","Personas mayores","Niños","Quien no use guantes ni gafas"],
+  safe:["Usa guantes y gafas de seguridad","Ventila mucho el baño","No lo uses sobre cromado, mármol ni piedra","Nunca lo mezcles con lejía ni con otro limpiador"]},
+ {id:"desengrasante",n:"Desengrasante",t:"Alcalino para cocina",a:["Cocina"],img:"img/desengrasante.jpg",
+  who:["Personas con piel sensible o alergias","Personas con asma o problemas respiratorios"],
+  safe:["Usa guantes","No lo uses sobre aluminio","Enjuaga bien las superficies que tocan alimentos","Ventila la cocina mientras lo usas"]},
+ {id:"detergente",n:"Detergente multiusos",t:"Tensioactivos",a:["Cocina","Pisos","Ropa"],img:"img/detergente.jpg",
+  who:["Personas con piel sensible o alergias","Bebes y niños"],
+  safe:["Enjuaga bien las superficies después de usarlo","Evita que te quede en la piel mucho tiempo","Usa poca cantidad: más no significa más limpio","Guarda el envase fuera del alcance de los niños"]},
+ {id:"bicarbonato",n:"Bicarbonato de sodio",t:"Abrasivo suave",a:["Cocina","Baños","Manchas"],img:"img/bicarbonato.jpg",
+  who:["Es de los productos más seguros del hogar","Personas con piel muy sensible: usa guantes igual"],
+  safe:["Haz una prueba en una zona pequeña","No lo uses sobre superficies muy brillantes o delicadas","Se puede mezclar con vinagre, pero pierden su fuerza y no es peligroso"]},
+ {id:"cuaternario",n:"Desinfectante de amonio cuaternario",t:"Desinfectante multiusos",a:["Desinfectar","Pisos"],img:"img/cuaternario.jpg",
+  who:["Personas con asma o problemas respiratorios","Personas con piel sensible","Niños y mascotas"],
+  safe:["Respeta el tiempo de contacto de la etiqueta","Deja que se seque antes de que pasen niños o mascotas","Usa guantes","No lo pongas sobre alimentos ni vajilla"]},
+ {id:"quitamantecas",n:"Quitamantecas de horno",t:"Soda cáustica / alcalino fuerte",a:["Horno","Cocina"],img:"img/quitamantecas.jpg",
+  who:["Personas con asma o problemas respiratorios","Personas con piel sensible o con heridas","Niños","Personas mayores"],
+  safe:["Usa guantes y gafas: quema la piel y los ojos","Ventila bien la cocina","Déjalo actuar solo el tiempo de la etiqueta","No lo mezcles con lejía ni con ningún ácido"]},
+ {id:"desatascador",n:"Desatascador de tuberías",t:"Soda cáustica o ácido concentrado",a:["Tuberías","Baños"],img:"img/desatascador.jpg",
+  who:["Personas con asma o problemas respiratorios","Niños y mascotas","Personas mayores","Quien no use guantes ni gafas"],
+  safe:["Usa guantes y gafas y no te acerques la cara","No lo mezcles con ningún otro producto","Sigue la etiqueta: cantidad y tiempo","Guarda el envase cerrado y fuera del alcance de niños"]},
+ {id:"lavaplatos",n:"Líquido para lavar platos",t:"Tensioactivos para cocina",a:["Cocina"],img:"img/lavaplatos.jpg",
+  who:["Personas con piel sensible, eccemas o heridas en las manos","Bebes y niños"],
+  safe:["Enjuaga bien los platos con agua limpia","Usa poca cantidad: más espuma no limpia más","Lávate las manos y sécalas después","Guarda fuera del alcance de los niños"]},
+ {id:"detergenteropa",n:"Detergente para ropa",t:"Tensioactivos para lavadora",a:["Ropa"],img:"img/detergenteropa.jpg",
+  who:["Personas con piel sensible o alergias","Bebes y niños","Personas con asma (polvos y fragancias)"],
+  safe:["Mide la dosis de la etiqueta: más no limpia más","No lo mezcles con lejía si la etiqueta no lo permite","Guarda en lugar seco y cerrado","Evita respirar el polvo al verterlo"]},
+ {id:"toallitas",n:"Toallitas desinfectantes",t:"Desinfectante de uso rápido",a:["Desinfectar"],img:"img/toallitas.jpg",
+  who:["Personas con piel sensible o alergias","Personas con asma (fragancias)","Niños"],
+  safe:["Deja que la superficie se seque antes de tocarla","No las uses en vajilla ni sobre alimentos","No las tires al inodoro: van a la basura","Cierra bien el paquete para que no se sequen"]},
+ {id:"suavizante",n:"Suavizante de telas",t:"Acondicionador de fibras",a:["Ropa"],img:"img/suavizante.jpg",
+  who:["Personas con piel sensible o eccemas","Bebes y niños","Personas con asma (fragancias intensas)"],
+  safe:["Usa la cantidad indicada en la etiqueta","No lo pongas directo sobre la ropa sin diluir","Enjuaga bien la ropa","Guarda fuera del alcance de los niños"]},
+ {id:"quitamugre",n:"Quitamugre / desmanchador",t:"Disolventes y tensoactivos",a:["Manchas","Ropa"],img:"img/quitamugre.jpg",
+  who:["Personas con piel sensible o alergias","Personas con asma","Niños","Quien lo use en espacios cerrados"],
+  safe:["Úsalo en lugar ventilado","Prueba primero en una zona que no se vea","No lo uses cerca del fuego: es inflamable","Cierra bien el envase después de usarlo"]}
+];
+const RULES=[
+ ["cloro","amoniaco","danger","Gases tóxicos (cloraminas)","Al mezclar cloro con amoníaco se liberan vapores que dañan las vías respiratorias. Sal del lugar y ventila."],
+ ["cloro","vinagre","danger","Se libera gas cloro","El vinagre es un ácido y, junto al cloro, produce gas cloro irritante y peligroso."],
+ ["cloro","acido","danger","Se libera gas cloro","Los limpiadores ácidos con cloro generan gas cloro. No los uses el mismo día en la misma superficie sin enjuagar."],
+ ["cloro","alcohol","danger","Compuestos tóxicos","Cloro y alcohol pueden formar cloroformo y otras sustancias dañinas."],
+ ["vinagre","peroxido","danger","Ácido peracético","Esta mezcla forma un ácido corrosivo que irrita ojos, piel y pulmones. Úsalos por separado."],
+ ["cloro","desengrasante","warn","Revisa la etiqueta","Varios desengrasantes contienen amoníaco u otros ingredientes que reaccionan con el cloro."],
+ ["cloro","cuaternario","warn","No los combines","Se reduce la eficacia y pueden generarse vapores irritantes."],
+ ["amoniaco","acido","warn","Vapores irritantes","La reacción entre ambos produce vapores que irritan ojos y garganta."],
+ ["vinagre","bicarbonato","info","Se anulan entre sí","No es peligroso, pero al mezclarlos se neutralizan y pierden su poder de limpieza."],
+ ["quitamantecas","cloro","danger","Gases tóxicos","El quitamantecas es muy alcalino (soda cáustica) y con el cloro puede liberar gases tóxicos. Nunca los mezcles ni los uses seguidos sin enjuagar bien."],
+ ["quitamantecas","acido","danger","Reacción violenta y salpicaduras","La soda cáustica del quitamantecas reacciona fuerte con los ácidos (como el limpiador de baños): se calienta y puede salpicar."],
+ ["desatascador","cloro","danger","Gases tóxicos","Los desatascadores reaccionan con el cloro y liberan gases peligrosos. Úsalos por separado."],
+ ["desatascador","quitamantecas","warn","Ambos muy corrosivos","No uses los dos juntos: son de los productos más agresivos de la casa y combinados dañan más la piel y las vías respiratorias."],
+ ["desatascador","vinagre","warn","Revisa la etiqueta","Si el desatascador es de soda cáustica, el vinagre (ácido) reacciona y puede salpicar. Revisa de qué es hecho."],
+ ["quitamantecas","vinagre","warn","Se neutralizan y calientan","El ácido del vinagre reacciona con la soda cáustica del quitamantecas: genera calor y salpicaduras y anula la limpieza."],
+ ["quitamugre","cloro","warn","Revisa la etiqueta","Muchos quitamugres llevan disolventes que no se deben combinar con el cloro."],
+ ["quitamugre","alcohol","warn","Todo es inflamable","El quitamugre y el alcohol pueden ser inflamables: no los uses cerca de fuego ni en el mismo momento."]
+];
+const byId=Object.fromEntries(PRODUCTS.map(p=>[p.id,p]));
+const LABEL={danger:"Peligro",warn:"Precaución",info:"Dato útil"};
+const sel=new Set(); let act=null;
+const COLORS={cloro:"#5AA9E6",amoniaco:"#7BD3C6",vinagre:"#E8D28A",peroxido:"#AEBBD0",alcohol:"#C9A6E4",acido:"#E86A5B",desengrasante:"#F2A65A",detergente:"#6CC788",bicarbonato:"#DCE6E8",cuaternario:"#4D8FCB",quitamantecas:"#E4572E",desatascador:"#3D5A80",lavaplatos:"#48CAE4",detergenteropa:"#9BDEAC",toallitas:"#FFBE0B",suavizante:"#F4A0C8",quitamugre:"#BC6C25"};
+const SPRAY=["amoniaco","alcohol","cuaternario","desengrasante","quitamugre"];
+function bottleInner(id){
+  const c=COLORS[id]||"#5AA9E6";
+  const top=SPRAY.includes(id)
+    ?'<rect x="12" y="2" width="16" height="7" rx="2" fill="#11312E"/><path d="M28 5h7" stroke="#11312E" stroke-width="3" stroke-linecap="round"/>'
+    :'<rect x="14" y="2" width="12" height="7" rx="2" fill="#11312E"/>';
+  return top+'<rect x="16" y="9" width="8" height="8" fill="'+c+'"/><rect x="6" y="16" width="28" height="39" rx="9" fill="'+c+'"/><rect x="6" y="16" width="9" height="39" rx="5" fill="#fff" opacity=".25"/><rect x="11" y="29" width="18" height="14" rx="3" fill="#fff" opacity=".9"/><path d="M20 32v8M16 36h8" stroke="#0E8C7F" stroke-width="2" stroke-linecap="round"/>';
+}
+function bottle(id,h){return '<svg width="'+Math.round(h*0.72)+'" height="'+h+'" viewBox="-1 0 42 56" aria-hidden="true">'+bottleInner(id)+'</svg>';}
+
+const LEVELS=["100%","115%","130%"];
+let fsLevel=Math.max(0,LEVELS.indexOf(document.documentElement.style.fontSize||"100%"));
+function setFs(i){
+  fsLevel=Math.max(0,Math.min(LEVELS.length-1,i));
+  document.documentElement.style.fontSize=LEVELS[fsLevel];
+  try{localStorage.setItem("cc-fs",LEVELS[fsLevel]);}catch(e){}
+}
+document.getElementById("fsDown").onclick=()=>setFs(fsLevel-1);
+document.getElementById("fsUp").onclick=()=>setFs(fsLevel+1);
+
+function ruleFor(a,b){return RULES.find(r=>(r[0]===a&&r[1]===b)||(r[0]===b&&r[1]===a));}
+
+function renderPicker(){
+  const el=document.getElementById("picker");
+  el.innerHTML="";
+  PRODUCTS.forEach(p=>{
+    const b=document.createElement("button");
+    b.className="chip"; b.type="button"; b.innerHTML=bottle(p.id,30);
+    const lb=document.createElement("span"); lb.textContent=p.n; b.appendChild(lb);
+    b.setAttribute("aria-pressed",sel.has(p.id));
+    b.onclick=()=>{sel.has(p.id)?sel.delete(p.id):sel.add(p.id);b.setAttribute("aria-pressed",sel.has(p.id));renderResult();};
+    el.appendChild(b);
+  });
+}
+
+function alertBox(cls,title,text){
+  const d=document.createElement("div"); d.className="alert "+cls;
+  const b=document.createElement("b"); b.textContent=title;
+  const p=document.createElement("p"); p.textContent=text;
+  d.append(b,p); return d;
+}
+
+function renderResult(){
+  const el=document.getElementById("result"); el.innerHTML="";
+  const ids=[...sel];
+  if(ids.length<2){
+    if(ids.length===1){el.appendChild(alertBox("info","Falta un producto","Elige al menos otro producto para comparar."));}
+    return;
+  }
+  const found=[];
+  for(let i=0;i<ids.length;i++)for(let j=i+1;j<ids.length;j++){
+    const r=ruleFor(ids[i],ids[j]); if(r)found.push(r);
+  }
+  const order={danger:0,warn:1,info:2};
+  found.sort((a,b)=>order[a[2]]-order[b[2]]);
+  if(!found.length){
+    el.appendChild(alertBox("ok","Sin combinaciones de riesgo registradas","No hay reglas que prohíban esta mezcla en el catálogo. Aun así, lee las etiquetas y no mezcles productos si no es necesario."));
+    return;
+  }
+  found.forEach(r=>{
+    el.appendChild(alertBox(r[2],LABEL[r[2]]+": "+byId[r[0]].n+" + "+byId[r[1]].n+" · "+r[3],r[4]));
+  });
+}
+
+function renderActs(){
+  const all=[...new Set(PRODUCTS.flatMap(p=>p.a))].sort();
+  const el=document.getElementById("acts"); el.innerHTML="";
+  ["Todas",...all].forEach(a=>{
+    const b=document.createElement("button");
+    b.className="chip"; b.type="button"; b.textContent=a;
+    const on=(a==="Todas"&&!act)||a===act;
+    b.setAttribute("aria-pressed",on);
+    b.onclick=()=>{act=a==="Todas"?null:a;renderActs();renderList();};
+    el.appendChild(b);
+  });
+}
+
+function blockBox(cls,title,items){
+  const d=document.createElement("div"); d.className="block "+cls;
+  const t=document.createElement("b"); t.className="t"; t.textContent=title;
+  const ul=document.createElement("ul");
+  items.forEach(x=>{const li=document.createElement("li");li.textContent=x;ul.appendChild(li);});
+  d.append(t,ul); return d;
+}
+
+function renderList(){
+  const q=document.getElementById("q").value.trim().toLowerCase();
+  const el=document.getElementById("list"); el.innerHTML="";
+  const items=PRODUCTS.filter(p=>(!act||p.a.includes(act))&&(!q||(p.n+" "+p.t).toLowerCase().includes(q)));
+  if(!items.length){const d=document.createElement("div");d.className="empty";d.textContent="No hay productos con ese criterio. Prueba con otra palabra o quita el filtro.";el.appendChild(d);return;}
+  items.forEach((p,i)=>{
+    const c=document.createElement("article"); c.className="card"; c.style.animationDelay=(i*60)+"ms";
+    const im=document.createElement("img"); im.className="photo"; im.src=p.img; im.alt="Foto de "+p.n; im.loading="lazy";
+    const body=document.createElement("div"); body.className="cbody";
+    const h=document.createElement("h3"); h.textContent=p.n;
+    const t=document.createElement("p"); t.className="type"; t.textContent=p.t;
+    const tags=document.createElement("div"); tags.className="tags";
+    p.a.forEach(a=>{const s=document.createElement("span");s.className="tag";s.textContent=a;tags.appendChild(s);});
+    const av=document.createElement("div"); av.className="avoid";
+    const bad=RULES.filter(r=>(r[0]===p.id||r[1]===p.id)&&r[2]!=="info").map(r=>byId[r[0]===p.id?r[1]:r[0]].n);
+    const s=document.createElement("strong"); s.textContent="No mezclar con: ";
+    av.append(s,document.createTextNode(bad.length?bad.join(", "):"sin restricciones registradas"));
+    body.append(h,t,tags,blockBox("who","A quién le afecta más",p.who),blockBox("safe","Cómo usarlo con seguridad",p.safe),av);
+    c.append(im,body); el.appendChild(c);
+  });
+}
+
+document.getElementById("q").addEventListener("input",renderList);
+renderPicker(); renderResult(); renderActs(); renderList();
+</script>
+</body>
+</html>
